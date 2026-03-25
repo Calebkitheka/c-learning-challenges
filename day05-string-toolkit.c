@@ -291,3 +291,498 @@ int main(void) {
     
     return 0;
 }
+
+/*
+ * File: day05c-string-utils.c
+ * Goal: Implement a reusable string utility library (Chapter 6, Sections 6.6-6.10)
+ * Concepts: iteration, arrays of strings, safe conversion, formatted I/O, character search
+ * Compile: gcc -Wall -Wextra -Werror -std=c11 -o string_utils day05c-string-utils.c
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <stdarg.h>
+#include <errno.h>
+#include <limits.h>
+#include <ctype.h>
+
+/* ========== HELPER: Check if character is a vowel ========== */
+static bool is_vowel(char c) {
+    c = tolower((unsigned char)c);
+    return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+}
+
+/* ========== 1. SAFE ITERATION: for_each_char ========== */
+/*
+ * Calls callback(c, index, ctx) for each character in string s.
+ * Demonstrates functional iteration pattern with context passing.
+ */
+void for_each_char(const char *s, void (*callback)(char, size_t, void*), void *ctx) {
+    if (s == NULL || callback == NULL) return;
+    
+    size_t index = 0;
+    while (s[index] != '\0') {
+        callback(s[index], index, ctx);
+        index++;
+    }
+}
+
+/* Callback example: Count vowels and print them */
+typedef struct {
+    size_t count;
+    size_t positions[100];  /* Simple fixed-size buffer for demo */
+} VowelStats;
+
+static void count_vowels_callback(char c, size_t idx, void *ctx) {
+    VowelStats *stats = (VowelStats*)ctx;
+    if (is_vowel(c) && stats->count < 100) {
+        stats->positions[stats->count] = idx;
+        stats->count++;
+    }
+}
+
+/* ========== 2. ARRAY-OF-STRINGS PRINTER ========== */
+/*
+ * Prints an array of strings with index and label.
+ * Works with char*[] or char** (array of pointers to strings).
+ */
+void print_string_array(char *const *arr, size_t count, const char *label) {
+    if (arr == NULL || label == NULL) return;
+    
+    printf("  %s (%zu items):\n", label, count);
+    for (size_t i = 0; i < count; i++) {
+        if (arr[i] != NULL) {
+            printf("    [%zu] \"%s\"\n", i, arr[i]);
+        } else {
+            printf("    [%zu] (NULL)\n", i);
+        }
+    }
+}
+
+/* ========== 3. SAFE INT PARSER ========== */
+/*
+ * Parses string s to int, with range validation [min, max].
+ * Returns true on success, false on any error.
+ * Uses strtol() with full error checking.
+ */
+bool parse_int_safe(const char *s, int min, int max, int *out) {
+    if (s == NULL || out == NULL) return false;
+    
+    /* Skip leading whitespace */
+    while (isspace((unsigned char)*s)) s++;
+    if (*s == '\0') return false;  /* Empty after whitespace */
+    
+    char *endptr;
+    errno = 0;
+    long val = strtol(s, &endptr, 10);
+    
+    /* Check for conversion errors */
+    if (errno == ERANGE) {
+        fprintf(stderr, "    [ERROR] parse_int_safe: overflow/underflow for \"%s\"\n", s);
+        return false;
+    }
+    
+    /* Check if any digits were consumed */
+    if (endptr == s) {
+        fprintf(stderr, "    [ERROR] parse_int_safe: no digits in \"%s\"\n", s);
+        return false;
+    }
+    
+    /* Check for trailing non-whitespace */
+    while (*endptr != '\0') {
+        if (!isspace((unsigned char)*endptr)) {
+            fprintf(stderr, "    [WARN] parse_int_safe: trailing chars in \"%s\": \"%s\"\n", 
+                    s, endptr);
+            /* Still accept, but warn */
+            break;
+        }
+        endptr++;
+    }
+    
+    /* Range check */
+    if (val < min || val > max) {
+        fprintf(stderr, "    [ERROR] parse_int_safe: %ld not in [%d, %d]\n", val, min, max);
+        return false;
+    }
+    
+    *out = (int)val;
+    return true;
+}
+
+/* ========== 4. FORMATTED OUTPUT BUILDER ========== */
+/*
+ * Appends formatted text to buffer using vsnprintf.
+ * Returns false if buffer would overflow (truncation occurred).
+ * Allows building strings incrementally.
+ */
+bool format_append(char *buf, size_t buf_size, const char *fmt, ...) {
+    if (buf == NULL || fmt == NULL || buf_size == 0) return false;
+    
+    /* Find current end of string */
+    size_t used = strlen(buf);
+    if (used >= buf_size) return false;  /* Buffer already full */
+    
+    char *dest = buf + used;
+    size_t remaining = buf_size - used;
+    
+    va_list args;
+    va_start(args, fmt);
+    int written = vsnprintf(dest, remaining, fmt, args);
+    va_end(args);
+    
+    /* vsnprintf returns negative on encoding error, or >= remaining if truncated */
+    if (written < 0 || (size_t)written >= remaining) {
+        /* Ensure null-termination even on error */
+        buf[buf_size - 1] = '\0';
+        return false;
+    }
+    
+    return true;
+}
+
+/* ========== 5. CHARACTER SEARCH UTILITIES ========== */
+
+/* Find first occurrence of char c, return index or -1 */
+ptrdiff_t find_first(const char *s, char c) {
+    if (s == NULL) return -1;
+    
+    char *p = strchr(s, c);
+    return (p != NULL) ? (p - s) : -1;
+}
+
+/* Find last occurrence of char c, return index or -1 */
+ptrdiff_t find_last(const char *s, char c) {
+    if (s == NULL) return -1;
+    
+    char *p = strrchr(s, c);
+    return (p != NULL) ? (p - s) : -1;
+}
+
+/* Extract filename from path using strrchr (handles / and \) */
+char *extract_filename(const char *path) {
+    if (path == NULL) return NULL;
+    
+    /* Find last slash or backslash */
+    char *last_slash = strrchr(path, '/');
+    char *last_backslash = strrchr(path, '\\');
+    
+    /* Pick the later occurrence */
+    char *sep = (last_slash > last_backslash) ? last_slash : last_backslash;
+    
+    /* Return pointer after separator, or original path if none found */
+    return (sep != NULL) ? sep + 1 : (char*)path;
+}
+
+/* Bonus: Extract file extension using strrchr */
+char *extract_extension(const char *filename) {
+    if (filename == NULL) return NULL;
+    
+    char *dot = strrchr(filename, '.');
+    return (dot != NULL) ? dot : NULL;  /* Returns pointer to ".ext" or NULL */
+}
+
+/* ========== DEMO: Vowel Counter Using for_each_char ========== */
+void demo_iteration(void) {
+    puts("\n[1] Iteration Demo: for_each_char with vowel counting");
+    
+    const char *text = "Hello, World!";
+    printf("  Input: \"%s\"\n", text);
+    
+    VowelStats stats = {0};
+    for_each_char(text, count_vowels_callback, &stats);
+    
+    printf("  Found %zu vowels at positions: ", stats.count);
+    for (size_t i = 0; i < stats.count; i++) {
+        printf("%zu", stats.positions[i]);
+        if (i < stats.count - 1) printf(", ");
+    }
+    printf("\n");
+    
+    /* Also demo pointer iteration (idiomatic C) */
+    printf("  Pointer iteration demo: ");
+    for (const char *p = text; *p != '\0'; p++) {
+        printf("%c", *p);
+    }
+    printf("\n");
+}
+
+/* ========== DEMO: Array-of-Strings Printing ========== */
+void demo_string_arrays(void) {
+    puts("\n[2] Array-of-Strings Demo");
+    
+    /* Approach 1: Array of pointers (char*[]) */
+    char *ptr_array[] = {"apple", "banana", "cherry", "date"};
+    size_t ptr_count = sizeof(ptr_array) / sizeof(ptr_array[0]);
+    print_string_array(ptr_array, ptr_count, "Pointer array (char*[])");
+    
+    /* Approach 2: Array of arrays (char[][N]) */
+    char array_array[][10] = {"foo", "bar", "baz"};
+    size_t arr_count = sizeof(array_array) / sizeof(array_array[0]);
+    
+    /* Convert to char*[] for printing (each row decays to pointer) */
+    char *temp_ptrs[10];
+    for (size_t i = 0; i < arr_count && i < 10; i++) {
+        temp_ptrs[i] = array_array[i];
+    }
+    print_string_array(temp_ptrs, arr_count, "Array of arrays (char[][10])");
+    
+    /* Show modifiability difference */
+    printf("\n  Modifiability test:\n");
+    printf("    ptr_array[0] = \"%s\" (pointer can change)\n", ptr_array[0]);
+    ptr_array[0] = "apricot";  /* ✅ OK: change pointer */
+    printf("    After ptr_array[0] = \"apricot\": \"%s\"\n", ptr_array[0]);
+    
+    printf("    array_array[0] = \"%s\" (characters can change)\n", array_array[0]);
+    array_array[0][0] = 'F';  /* ✅ OK: change character */
+    printf("    After array_array[0][0] = 'F': \"%s\"\n", array_array[0]);
+}
+
+/* ========== DEMO: Safe Int Parsing ========== */
+void demo_safe_parsing(void) {
+    puts("\n[3] Safe Int Parsing Demo");
+    
+    struct TestCase {
+        const char *input;
+        int min, max;
+        bool expect_success;
+    };
+    
+    struct TestCase tests[] = {
+        {"42", 0, 100, true},
+        {"-5", -10, 10, true},
+        {"  123  ", 0, 1000, true},  /* Whitespace OK */
+        {"12.34", 0, 100, false},     /* Trailing chars → warn but accept */
+        {"abc", 0, 100, false},       /* No digits */
+        {"999999999999", 0, 100, false},  /* Overflow */
+        {"50", 0, 40, false},         /* Out of range */
+        {"", 0, 100, false},          /* Empty */
+    };
+    
+    size_t num_tests = sizeof(tests) / sizeof(tests[0]);
+    
+    for (size_t i = 0; i < num_tests; i++) {
+        int result;
+        bool ok = parse_int_safe(tests[i].input, tests[i].min, tests[i].max, &result);
+        
+        printf("  Test %zu: \"%s\" [%d,%d] → ", 
+               i+1, tests[i].input, tests[i].min, tests[i].max);
+        
+        if (ok == tests[i].expect_success) {
+            printf("✓ ");
+            if (ok) printf("result = %d", result);
+            else printf("correctly rejected");
+        } else {
+            printf("✗ UNEXPECTED: ok=%d, expected=%d", ok, tests[i].expect_success);
+        }
+        printf("\n");
+    }
+    
+    /* Show why atoi is dangerous */
+    printf("\n  ⚠️ Comparison with atoi():\n");
+    printf("    atoi(\"999999999999\") = %d (silent overflow!)\n", 
+           atoi("999999999999"));
+    printf("    parse_int_safe() correctly returns false ✓\n");
+}
+
+/* ========== DEMO: Formatted Output Building ========== */
+void demo_formatted_output(void) {
+    puts("\n[4] Formatted Output Builder Demo");
+    
+    char buffer[100] = "";  /* Start empty */
+    
+    /* Build a user profile string incrementally */
+    printf("  Building: \"User: %s, Age: %d, Active: %s\"\n", "Alice", 30, "yes");
+    
+    bool ok = true;
+    ok &= format_append(buffer, sizeof(buffer), "User: %s", "Alice");
+    ok &= format_append(buffer, sizeof(buffer), ", Age: %d", 30);
+    ok &= format_append(buffer, sizeof(buffer), ", Active: %s", "yes");
+    
+    if (ok) {
+        printf("  ✓ Success: \"%s\"\n", buffer);
+    } else {
+        printf("  ✗ Buffer overflow (truncated): \"%s\"\n", buffer);
+    }
+    
+    /* Demo overflow detection */
+    printf("\n  Overflow test:\n");
+    char small[20] = "Start: ";
+    ok = format_append(small, sizeof(small), "This is a very long string that will definitely overflow the small buffer");
+    printf("    Small buffer result: \"%s\"\n", small);
+    printf("    Overflow detected: %s ✓\n", ok ? "no" : "yes");
+    
+    /* Demo sscanf parsing */
+    printf("\n  sscanf() parsing demo:\n");
+    const char *input = "score=95.5, grade=A";
+    double score;
+    char grade[10];
+    
+    int parsed = sscanf(input, "score=%lf, grade=%9s", &score, grade);
+    if (parsed == 2) {
+        printf("    Parsed: score=%.1f, grade=%s ✓\n", score, grade);
+    } else {
+        printf("    Parse failed (got %d fields)\n", parsed);
+    }
+}
+
+/* ========== DEMO: Character Search Utilities ========== */
+void demo_char_search(void) {
+    puts("\n[5] Character Search Utilities Demo");
+    
+    const char *text = "banana split";
+    printf("  Input: \"%s\"\n", text);
+    
+    /* find_first */
+    ptrdiff_t first_a = find_first(text, 'a');
+    printf("  find_first('%c') = %td", 'a', first_a);
+    if (first_a >= 0) printf(" → \"%s\"", text + first_a);
+    printf("\n");
+    
+    /* find_last */
+    ptrdiff_t last_a = find_last(text, 'a');
+    printf("  find_last('%c')  = %td", 'a', last_a);
+    if (last_a >= 0) printf(" → \"%s\"", text + last_a);
+    printf("\n");
+    
+    /* extract_filename */
+    printf("\n  extract_filename() demo:\n");
+    const char *paths[] = {
+        "/home/user/file.txt",
+        "C:\\Users\\docs\\report.pdf",
+        "relative/path/to/script.c",
+        "just_a_file.txt",
+        "no_slashes_here"
+    };
+    
+    for (size_t i = 0; i < sizeof(paths)/sizeof(paths[0]); i++) {
+        char *fname = extract_filename(paths[i]);
+        printf("    \"%s\" → \"%s\"\n", paths[i], fname ? fname : "(NULL)");
+    }
+    
+    /* extract_extension */
+    printf("\n  extract_extension() demo:\n");
+    const char *files[] = {
+        "document.pdf",
+        "image.PNG",
+        "archive.tar.gz",
+        "no_extension",
+        ".hidden"
+    };
+    
+    for (size_t i = 0; i < sizeof(files)/sizeof(files[0]); i++) {
+        char *ext = extract_extension(files[i]);
+        printf("    \"%s\" → %s\n", files[i], ext ? ext : "(no extension)");
+    }
+    
+    /* Bonus: Find all occurrences using strchr in loop */
+    printf("\n  Find all 'a' using strchr loop:\n");
+    const char *search = text;
+    size_t pos = 0;
+    while ((search = strchr(search, 'a')) != NULL) {
+        printf("    Found at index %td\n", search - text);
+        search++;  /* Move past this occurrence */
+    }
+}
+
+/* ========== BONUS: Simple Config Line Parser ========== */
+bool parse_config_line(const char *line, char *key, size_t key_size, 
+                       char *value, size_t value_size) {
+    if (line == NULL || key == NULL || value == NULL) return false;
+    
+    /* Skip leading whitespace */
+    while (isspace((unsigned char)*line)) line++;
+    if (*line == '#' || *line == '\0') return false;  /* Comment or empty */
+    
+    /* Find '=' separator */
+    char *equals = strchr(line, '=');
+    if (equals == NULL) return false;
+    
+    /* Extract key (trim trailing whitespace) */
+    size_t key_len = equals - line;
+    if (key_len >= key_size) return false;
+    
+    strncpy(key, line, key_len);
+    key[key_len] = '\0';
+    
+    /* Trim trailing whitespace from key */
+    while (key_len > 0 && isspace((unsigned char)key[key_len - 1])) {
+        key[--key_len] = '\0';
+    }
+    
+    /* Extract value (skip leading whitespace after '=') */
+    const char *val_start = equals + 1;
+    while (isspace((unsigned char)*val_start)) val_start++;
+    
+    /* Copy value with bounds checking */
+    strncpy(value, val_start, value_size - 1);
+    value[value_size - 1] = '\0';
+    
+    /* Trim trailing whitespace/newline from value */
+    size_t val_len = strlen(value);
+    while (val_len > 0 && (value[val_len - 1] == '\n' || 
+                          value[val_len - 1] == '\r' ||
+                          isspace((unsigned char)value[val_len - 1]))) {
+        value[--val_len] = '\0';
+    }
+    
+    return true;
+}
+
+void demo_config_parsing(void) {
+    puts("\n[Bonus] Config Line Parser Demo");
+    
+    const char *lines[] = {
+        "host = localhost",
+        "port=8080",
+        "  debug  =  true  ",
+        "# This is a comment",
+        "invalid line without equals",
+        "timeout = 30.5",
+        ""
+    };
+    
+    char key[50], value[100];
+    
+    for (size_t i = 0; lines[i][0] != '\0'; i++) {
+        printf("  Line %zu: \"%s\"\n", i+1, lines[i]);
+        
+        if (parse_config_line(lines[i], key, sizeof(key), value, sizeof(value))) {
+            printf("    ✓ Parsed: key=\"%s\", value=\"%s\"\n", key, value);
+            
+            /* Try to parse value as int if it looks numeric */
+            int int_val;
+            if (parse_int_safe(value, INT_MIN, INT_MAX, &int_val)) {
+                printf("      → As int: %d\n", int_val);
+            }
+        } else {
+            printf("    ✗ Skipped (comment, empty, or malformed)\n");
+        }
+    }
+}
+
+/* ========== MAIN: RUN ALL DEMOS ========== */
+int main(void) {
+    puts("=== C String Utilities Toolkit ===");
+    puts("Sections 6.6-6.10: Iteration, Arrays, Conversion, Formatted I/O, Search\n");
+    
+    demo_iteration();
+    demo_string_arrays();
+    demo_safe_parsing();
+    demo_formatted_output();
+    demo_char_search();
+    demo_config_parsing();
+    
+    /* ========== DONE ========== */
+    puts("\n✅ String Utilities Toolkit complete!");
+    puts("Key takeaways:");
+    puts("  • Use for_each_char for flexible iteration with callbacks");
+    puts("  • char*[] = modifiable pointers; char[][N] = modifiable content");
+    puts("  • Always use strtol/strtod with error checking, never atoi/atof");
+    puts("  • snprintf/vsnprintf prevent buffer overflows in formatted output");
+    puts("  • strchr/strrchr + pointer arithmetic = safe, efficient searching");
+    puts("  • Always validate input and check return values!");
+    
+    return 0;
+}
