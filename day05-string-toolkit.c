@@ -786,3 +786,419 @@ int main(void) {
     
     return 0;
 }
+
+
+/* 
+ * ============================================================================
+ * DAY 5b UPDATE: Add Sections 6.11-6.14 Functions
+ * Copy this entire block and paste it INTO your existing day05-string-toolkit.c
+ * Place it BEFORE the main() function, after your existing helper functions
+ * ============================================================================
+ */
+
+/* ========== SECTION 6.11: SAFE STRCAT ========== */
+/*
+ * Safely concatenate src to dest, ensuring no buffer overflow.
+ * Returns: true on success, false if src doesn't fit in remaining space
+ */
+bool safe_strcat(char *dest, size_t dest_size, const char *src) {
+    if (dest == NULL || src == NULL || dest_size == 0) return false;
+    
+    size_t used = strlen(dest);
+    if (used >= dest_size) return false;  /* dest already full */
+    
+    size_t remaining = dest_size - used;
+    size_t src_len = strlen(src);
+    
+    if (src_len >= remaining) return false;  /* won't fit including null */
+    
+    /* Safe to copy */
+    for (size_t i = 0; i <= src_len; i++) {  /* <= to copy null terminator */
+        dest[used + i] = src[i];
+    }
+    
+    return true;
+}
+
+/* ========== SECTION 6.12: CASE-INSENSITIVE PREFIX CHECK ========== */
+/*
+ * Check if str starts with prefix, ignoring case.
+ * Uses strncasecmp if available, otherwise manual loop.
+ */
+bool starts_with_ignore(const char *str, const char *prefix) {
+    if (str == NULL || prefix == NULL) return false;
+    
+    size_t prefix_len = strlen(prefix);
+    size_t str_len = strlen(str);
+    
+    if (str_len < prefix_len) return false;
+    
+    /* Use strncasecmp if available (POSIX), else manual comparison */
+    #ifdef _POSIX_C_SOURCE
+        return strncasecmp(str, prefix, prefix_len) == 0;
+    #else
+        /* Manual case-insensitive comparison */
+        for (size_t i = 0; i < prefix_len; i++) {
+            if (tolower((unsigned char)str[i]) != 
+                tolower((unsigned char)prefix[i])) {
+                return false;
+            }
+        }
+        return true;
+    #endif
+}
+
+/* ========== SECTION 6.13: SAFE NUMERIC PARSING WITH SUFFIXES ========== */
+/*
+ * Parse size string with optional K/M/G suffix (1024-based).
+ * Accepts: "100", "1K", "2MB", "1G", "512m"
+ * Returns: true on success, false on invalid input or overflow
+ */
+bool parse_size_suffix(const char *s, size_t *out) {
+    if (s == NULL || out == NULL) return false;
+    
+    /* Skip leading whitespace */
+    while (isspace((unsigned char)*s)) s++;
+    if (*s == '\0') return false;
+    
+    char *endptr;
+    errno = 0;
+    unsigned long long val = strtoull(s, &endptr, 10);
+    
+    /* Check for conversion errors */
+    if (errno == ERANGE || endptr == s) {
+        return false;  /* overflow or no digits */
+    }
+    
+    /* Skip whitespace after number */
+    while (isspace((unsigned char)*endptr)) endptr++;
+    
+    /* Check for suffix and apply multiplier */
+    unsigned long long multiplier = 1;
+    if (*endptr != '\0') {
+        char suffix = toupper((unsigned char)*endptr);
+        endptr++;
+        
+        /* Optional 'B' after K/M/G */
+        if (*endptr == 'B' || *endptr == 'b') {
+            endptr++;
+        }
+        
+        /* Check for trailing non-whitespace */
+        while (isspace((unsigned char)*endptr)) endptr++;
+        if (*endptr != '\0') {
+            return false;  /* invalid trailing chars */
+        }
+        
+        switch (suffix) {
+            case 'K': multiplier = 1024ULL; break;
+            case 'M': multiplier = 1024ULL * 1024ULL; break;
+            case 'G': multiplier = 1024ULL * 1024ULL * 1024ULL; break;
+            default: return false;  /* unknown suffix */
+        }
+        
+        /* Check for overflow in multiplication */
+        if (val > ULLONG_MAX / multiplier) {
+            return false;
+        }
+        val *= multiplier;
+    }
+    
+    /* Check if result fits in size_t */
+    if (val > SIZE_MAX) {
+        return false;
+    }
+    
+    *out = (size_t)val;
+    return true;
+}
+
+/* ========== SECTION 6.14: TOKEN EXTRACTION USING STRSPN/STRCSPN ========== */
+/*
+ * Extract next token from cursor position, updating cursor.
+ * delim: string of delimiter characters to skip/separate tokens
+ * out: buffer to receive token copy
+ * out_size: size of out buffer (including null terminator)
+ * Returns: true if token found, false if end of string reached
+ */
+bool next_token(const char **cursor, const char *delim, 
+                char *out, size_t out_size) {
+    if (cursor == NULL || *cursor == NULL || delim == NULL || 
+        out == NULL || out_size == 0) {
+        return false;
+    }
+    
+    const char *s = *cursor;
+    
+    /* Skip leading delimiters using strspn */
+    s += strspn(s, delim);
+    if (*s == '\0') {
+        *cursor = s;  /* Update cursor to end */
+        return false;  /* No more tokens */
+    }
+    
+    /* Find token length using strcspn (stops at first delimiter) */
+    size_t token_len = strcspn(s, delim);
+    
+    /* Copy token safely with bounds checking */
+    size_t copy_len = (token_len < out_size - 1) ? token_len : out_size - 1;
+    strncpy(out, s, copy_len);
+    out[copy_len] = '\0';  /* Ensure null termination */
+    
+    /* Update cursor to position after token */
+    *cursor = s + token_len;
+    
+    return true;
+}
+
+/* ========== HELPER: Print tokens from delimited string ========== */
+void demo_token_extraction(const char *input, const char *delim) {
+    printf("  Input: \"%s\"\n", input);
+    printf("  Delimiters: \"%s\"\n", delim);
+    printf("  Tokens:\n");
+    
+    const char *cursor = input;
+    char token[100];
+    int index = 0;
+    
+    while (next_token(&cursor, delim, token, sizeof(token))) {
+        printf("    [%d] \"%s\"\n", ++index, token);
+    }
+    
+    if (index == 0) {
+        printf("    (no tokens found)\n");
+    }
+    printf("\n");
+}
+
+/* ========== HELPER: Demo safe_strcat ========== */
+void demo_safe_concat(void) {
+    puts("\n[6.11] Safe Concatenation Demo");
+    
+    char buf[20] = "Hello";
+    printf("  Initial: \"%s\" (buf size: %zu)\n", buf, sizeof(buf));
+    
+    /* Test 1: Safe concatenation */
+    if (safe_strcat(buf, sizeof(buf), " World")) {
+        printf("  ✓ After strcat \" World\": \"%s\"\n", buf);
+    } else {
+        printf("  ✗ Concatenation failed (would overflow)\n");
+    }
+    
+    /* Test 2: Overflow prevention */
+    if (safe_strcat(buf, sizeof(buf), " ThisIsTooLong")) {
+        printf("  ✓ After strcat long: \"%s\"\n", buf);
+    } else {
+        printf("  ✗ Correctly rejected overflow: \"%s\"\n", buf);
+    }
+    
+    /* Test 3: strcpy equivalent using safe_strcat on empty */
+    char buf2[10] = "";
+    safe_strcat(buf2, sizeof(buf2), "test");
+    printf("  Safe copy via strcat: \"%s\"\n\n", buf2);
+}
+
+/* ========== HELPER: Demo case-insensitive prefix ========== */
+void demo_prefix_check(void) {
+    puts("[6.12] Case-Insensitive Prefix Check Demo");
+    
+    struct TestCase {
+        const char *str;
+        const char *prefix;
+        bool expected;
+    };
+    
+    struct TestCase tests[] = {
+        {"Hello World", "hello", true},
+        {"HELLO", "hello", true},
+        {"Goodbye", "hello", false},
+        {"Config: debug=true", "CONFIG:", true},
+        {"", "test", false},
+        {"test", "", true},  /* empty prefix matches everything */
+    };
+    
+    for (size_t i = 0; i < sizeof(tests)/sizeof(tests[0]); i++) {
+        bool result = starts_with_ignore(tests[i].str, tests[i].prefix);
+        printf("  \"%s\" starts with \"%s\"? %s %s\n",
+               tests[i].str, tests[i].prefix,
+               result ? "yes" : "no",
+               (result == tests[i].expected) ? "✓" : "✗");
+    }
+    printf("\n");
+}
+
+/* ========== HELPER: Demo size suffix parsing ========== */
+void demo_size_parsing(void) {
+    puts("[6.13] Size Suffix Parsing Demo");
+    
+    struct TestCase {
+        const char *input;
+        bool expect_success;
+        size_t expected_value;
+    };
+    
+    struct TestCase tests[] = {
+        {"100", true, 100},
+        {"1K", true, 1024},
+        {"2MB", true, 2 * 1024 * 1024},
+        {"1G", true, 1024 * 1024 * 1024},
+        {"512m", true, 512 * 1024},
+        {"100KB", true, 100 * 1024},
+        {"abc", false, 0},
+        {"100XYZ", false, 0},
+        {"999999999999999999999G", false, 0},  /* overflow */
+        {"  2K  ", true, 2 * 1024},  /* whitespace OK */
+    };
+    
+    for (size_t i = 0; i < sizeof(tests)/sizeof(tests[0]); i++) {
+        size_t result;
+        bool ok = parse_size_suffix(tests[i].input, &result);
+        
+        printf("  \"%-20s\" → ", tests[i].input);
+        if (ok == tests[i].expect_success) {
+            printf("✓ ");
+            if (ok) {
+                printf("%zu bytes", result);
+                if (result != tests[i].expected_value) {
+                    printf(" (expected %zu)", tests[i].expected_value);
+                }
+            } else {
+                printf("correctly rejected");
+            }
+        } else {
+            printf("✗ UNEXPECTED");
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+/* ========== HELPER: Demo token extraction ========== */
+void demo_span_functions(void) {
+    puts("[6.14] Token Extraction with strspn/strcspn Demo");
+    
+    /* Demo 1: Simple comma-separated */
+    demo_token_extraction("apple,banana,cherry", ",");
+    
+    /* Demo 2: Multiple delimiters */
+    demo_token_extraction("one;two:three,four", ",;:");
+    
+    /* Demo 3: Consecutive delimiters (skipped) */
+    demo_token_extraction("a,,b;;;c", ",;");
+    
+    /* Demo 4: Config-like parsing */
+    const char *config = "host=localhost;port=8080;ssl=true";
+    printf("  Config parsing: \"%s\"\n", config);
+    const char *cursor = config;
+    char token[100];
+    
+    while (next_token(&cursor, ";", token, sizeof(token))) {
+        /* Split key=value within each token */
+        char *equals = strchr(token, '=');
+        if (equals != NULL) {
+            *equals = '\0';  /* Split in place */
+            char *key = token;
+            char *value = equals + 1;
+            printf("    %s = %s\n", key, value);
+        }
+    }
+    printf("\n");
+}
+
+/* ========== BONUS: Parse config line using new functions ========== */
+bool parse_config_entry(const char *line, char *key, size_t key_size,
+                        char *value, size_t value_size) {
+    if (line == NULL || key == NULL || value == NULL) return false;
+    
+    /* Skip leading whitespace/delimiters */
+    line += strspn(line, " \t");
+    if (*line == '#' || *line == '\0') return false;  /* comment or empty */
+    
+    /* Find '=' separator using strcspn */
+    size_t key_len = strcspn(line, "=");
+    if (line[key_len] != '=') return false;  /* no equals found */
+    
+    /* Copy key with bounds checking */
+    if (key_len >= key_size) return false;
+    strncpy(key, line, key_len);
+    key[key_len] = '\0';
+    
+    /* Trim trailing whitespace from key */
+    while (key_len > 0 && isspace((unsigned char)key[key_len - 1])) {
+        key[--key_len] = '\0';
+    }
+    
+    /* Move to value (after '=') */
+    const char *val_start = line + key_len + 1;
+    val_start += strspn(val_start, " \t");  /* skip leading whitespace */
+    
+    /* Find end of value (next delimiter or end of string) */
+    size_t val_len = strcspn(val_start, ";,\n\r");
+    
+    /* Copy value with bounds checking */
+    if (val_len >= value_size) val_len = value_size - 1;
+    strncpy(value, val_start, val_len);
+    value[val_len] = '\0';
+    
+    /* Trim trailing whitespace from value */
+    size_t vlen = strlen(value);
+    while (vlen > 0 && isspace((unsigned char)value[vlen - 1])) {
+        value[--vlen] = '\0';
+    }
+    
+    return true;
+}
+
+void demo_config_parsing_extended(void) {
+    puts("[Bonus] Extended Config Parser Demo");
+    
+    const char *lines[] = {
+        "host = localhost",
+        "port=8080",
+        "max_size = 2MB",
+        "enable_ssl = true",
+        "  # This is a comment  ",
+        "timeout = 30.5",
+        ""
+    };
+    
+    char key[50], value[100];
+    
+    for (size_t i = 0; lines[i][0] != '\0'; i++) {
+        printf("  Line %zu: \"%s\"\n", i+1, lines[i]);
+        
+        if (parse_config_entry(lines[i], key, sizeof(key), value, sizeof(value))) {
+            printf("    ✓ Parsed: key=\"%s\", value=\"%s\"\n", key, value);
+            
+            /* Try to parse value as size with suffix */
+            size_t size_val;
+            if (parse_size_suffix(value, &size_val)) {
+                printf("      → As size: %zu bytes", size_val);
+                if (size_val >= 1024*1024*1024) {
+                    printf(" (%.2f GB)", size_val / (1024.0*1024.0*1024.0));
+                } else if (size_val >= 1024*1024) {
+                    printf(" (%.2f MB)", size_val / (1024.0*1024.0));
+                } else if (size_val >= 1024) {
+                    printf(" (%.2f KB)", size_val / 1024.0);
+                }
+                printf("\n");
+            }
+            
+            /* Check for boolean-like values */
+            if (starts_with_ignore(value, "true") || 
+                starts_with_ignore(value, "yes") ||
+                starts_with_ignore(value, "on") ||
+                starts_with_ignore(value, "1")) {
+                printf("      → Boolean: ENABLED\n");
+            } else if (starts_with_ignore(value, "false") || 
+                       starts_with_ignore(value, "no") ||
+                       starts_with_ignore(value, "off") ||
+                       starts_with_ignore(value, "0")) {
+                printf("      → Boolean: DISABLED\n");
+            }
+        } else {
+            printf("    ✗ Skipped (comment, empty, or malformed)\n");
+        }
+    }
+    printf("\n");
+}
