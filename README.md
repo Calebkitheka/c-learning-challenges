@@ -1,11 +1,9 @@
-# c-learning-challenges
-My C Programming Practice Projects
 # 🎯 C Learning Journey
 
 > A structured, project-based path to mastering C programming — from basics to advanced systems programming.
 
 ![C Programming](https://img.shields.io/badge/C-ANSI%2FC99%2FC11-blue)
-![Progress](https://img.shields.io/badge/Progress-20%2F30%20Days-green)
+![Progress](https://img.shields.io/badge/Progress-23%2F30%20Days-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
@@ -61,10 +59,31 @@ This repository documents my self-taught journey learning C programming through 
 | 15 | Selection Statements | `if`/`else`, `switch`, fall-through, enum handling | `day15-selection-toolkit.c` |
 | 16 | Initialization Rules | Storage duration, designated initializers, one-definition rule | `day16-initialization-toolkit.c` |
 | 17 | Declaration vs Definition | Header/source separation, linkage, opaque pointers | `decl_def_demo/` |
-| 18 | Command-Line Arguments | `argc`/`argv`, `strtol`, `getopt`, error handling | `day18-cli-toolkit.c` |
+| 18 | Command-Line Arguments | `argc`/`argv`, `strtol`, `getopt`, argument parsing | `day18-cli-toolkit.c` |
 | 19 | File I/O Basics | `fopen`, `fprintf`, `getline`, binary vs text modes | `day19-file-io-toolkit.c` |
 | 19b | File Reading Patterns | `fscanf`, `fgets`, portable binary serialization | `day19b-file-reading-toolkit.c` |
 | 20 | Formatted Output | Conversion specifiers, flags, precision, safety | `day20-format-toolkit.c` |
+| 20b | Portable Printing | Pointer printing, length modifiers, cross-platform | `day20b-portable-printing.c` |
+
+### 🔹 Memory & Pointers (Days 21-23)
+
+| Day | Topic | Key Concepts | Files |
+|-----|-------|-------------|-------|
+| 21 | Struct Pointers & Const | Struct pointers, const correctness, function pointers | `day21-pointer-toolkit.c` |
+| 22 | Dynamic Memory | `malloc`, `calloc`, `realloc`, `free`, leak prevention | `day22-memory-toolkit.c` |
+| 23 | Advanced Pointer Patterns | Pointer arithmetic, double pointers, polymorphism | `day23-advanced-pointers.c` |
+
+### 🔹 Upcoming (Days 24-30)
+
+| Day | Planned Topic | Goals |
+|-----|--------------|-------|
+| 24 | Error Handling | `errno`, `perror`, custom error codes, assertions |
+| 25 | Preprocessor Deep Dive | Macros, conditionals, include guards, X-macros |
+| 26 | Standard Library Tour | `<string.h>`, `<ctype.h>`, `<time.h>`, `<stdlib.h>` |
+| 27 | Project: Mini Shell | Command parsing, execution, pipes, basic REPL |
+| 28 | Project: Config Parser | INI/JSON parsing, validation, defaults merging |
+| 29 | Project: Data Serializer | Binary/text serialization, versioning, checksums |
+| 30 | Capstone Review | Refactor early code, apply all learned patterns |
 
 ---
 
@@ -80,9 +99,9 @@ This repository documents my self-taught journey learning C programming through 
 # Navigate to project root
 cd c-learning-challenges
 
-# Compile a specific day (example: Day 20)
-gcc -Wall -Wextra -Werror -std=c11 -o day20_format day20-format-toolkit.c
+# Compile a specific day (example: Day 23)
+gcc -Wall -Wextra -Werror -std=c11 -o day23_advanced day23-advanced-pointers.c
 
 # Run
-./day20_format          # Linux/macOS
-day20_format.exe        # Windows
+./day23_advanced          # Linux/macOS
+day23_advanced.exe        # Windows
