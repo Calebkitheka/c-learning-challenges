@@ -72,12 +72,12 @@ This repository documents my self-taught journey learning C programming through 
 | 21 | Struct Pointers & Const | Struct pointers, const correctness, function pointers | `day21-pointer-toolkit.c` |
 | 22 | Dynamic Memory | `malloc`, `calloc`, `realloc`, `free`, leak prevention | `day22-memory-toolkit.c` |
 | 23 | Advanced Pointer Patterns | Pointer arithmetic, double pointers, polymorphism | `day23-advanced-pointers.c` |
+| 24 | Error Handling | `errno`, `perror`, custom error codes, assertions |'day24-error-handling.c' |
 
 ### 🔹 Upcoming (Days 24-30)
 
 | Day | Planned Topic | Goals |
 |-----|--------------|-------|
-| 24 | Error Handling | `errno`, `perror`, custom error codes, assertions |
 | 25 | Preprocessor Deep Dive | Macros, conditionals, include guards, X-macros |
 | 26 | Standard Library Tour | `<string.h>`, `<ctype.h>`, `<time.h>`, `<stdlib.h>` |
 | 27 | Project: Mini Shell | Command parsing, execution, pipes, basic REPL |
