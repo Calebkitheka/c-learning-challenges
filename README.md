@@ -79,9 +79,9 @@ This repository documents my self-taught journey learning C programming through 
 
 | Day | Planned Topic | Goals |
 |-----|--------------|-------|
-| 26 | Standard Library Tour | `<string.h>`, `<ctype.h>`, `<time.h>`, `<stdlib.h>` |
-| 27 | Project: Mini Shell | Command parsing, execution, pipes, basic REPL |
-| 28 | Project: Config Parser | INI/JSON parsing, validation, defaults merging |
+| 26 | Standard Library Tour | `<string.h>`, `<ctype.h>`, `<time.h>`, `<stdlib.h>` | `day27-mini-shell.c` |
+| 27 | Project: Mini Shell | Command parsing, execution, pipes, basic REPL |  `day28-config-parser.c` |
+| 28 | Project: Config Parser | INI/JSON parsing, validation, defaults merging |  `day29-serializer.c` |
 | 29 | Project: Data Serializer | Binary/text serialization, versioning, checksums |
 | 30 | Capstone Review | Refactor early code, apply all learned patterns |
 
