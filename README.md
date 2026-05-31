@@ -85,6 +85,14 @@ This repository documents my self-taught journey learning C programming through 
 | 29 | Project: Data Serializer | Binary/text serialization, versioning, checksums |
 | 30 | Capstone Review | Refactor early code, apply all learned patterns |
 
+Advanced Topics (Day 31+)
+
+| Day | Topic | Key Concepts | Files |
+|-----|-------|-------------|-------|
+| 31 | Sequence Points | Evaluation order, undefined behavior | `day31-sequence-points.c` |
+| 32 | Function Pointers Deep Dive | Callbacks, vtables, command tables | `day32-function-pointers.c` |
+| 33 | **Function Parameters** | Pass mechanisms, const, variadic, validation | `day33-function-parameters.c` |
+
 ---
 
 ## 🛠️ Build & Run Instructions
