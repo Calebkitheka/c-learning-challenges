@@ -92,6 +92,7 @@ Advanced Topics (Day 31+)
 | 31 | Sequence Points | Evaluation order, undefined behavior | `day31-sequence-points.c` |
 | 32 | Function Pointers Deep Dive | Callbacks, vtables, command tables | `day32-function-pointers.c` |
 | 33 | **Function Parameters** | Pass mechanisms, const, variadic, validation | `day33-function-parameters.c` |
+| 34 | **2D Arrays to Functions** | 5 methods, memory layout, VLA, dynamic | `day33-2d-arrays.c` |
 
 ---
 
