@@ -91,8 +91,13 @@ Advanced Topics (Day 31+)
 |-----|-------|-------------|-------|
 | 31 | Sequence Points | Evaluation order, undefined behavior | `day31-sequence-points.c` |
 | 32 | Function Pointers Deep Dive | Callbacks, vtables, command tables | `day32-function-pointers.c` |
-| 33 | **Function Parameters** | Pass mechanisms, const, variadic, validation | `day33-function-parameters.c` |
-| 34 | **2D Arrays to Functions** | 5 methods, memory layout, VLA, dynamic | `day33-2d-arrays.c` |
+| 33a | Function Parameters | Pass mechanisms, const, variadic | `day33-function-parameters.c` |
+| 33b | 2D Arrays to Functions | 5 methods, memory layout, VLA | `day33-2d-arrays.c` |
+| 34 | Multithreading | pthreads, mutexes, condition variables | `day34-multithreading.c` |
+| 35 | Advanced Error Handling | Propagation, logging, recovery, thread-safe | `day35-advanced-error-handling.c` |
+| 36 | Undefined Behavior | UB patterns, sanitizers, prevention | `day36-undefined-behavior.c` |
+| 37 | **Random Number Generation** | rand(), PCG, crypto RNG, testing | `day37-random-numbers.c` |
+| ... | Continue Learning! | Network, embedded, system programming | Future projects |
 
 ---
 
