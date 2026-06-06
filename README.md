@@ -85,10 +85,11 @@ This repository documents my self-taught journey learning C programming through 
 | 29 | Project: Data Serializer | Binary/text serialization, versioning, checksums |
 | 30 | Capstone Review | Refactor early code, apply all learned patterns |
 
-Advanced Topics (Day 31+)
+### 🔹 Advanced Topics (Day 31+)
 
 | Day | Topic | Key Concepts | Files |
 |-----|-------|-------------|-------|
+| 25 | Preprocessor Deep Dive | Macros, conditionals, X-macros | `day25-preprocessor.c` |
 | 31 | Sequence Points | Evaluation order, undefined behavior | `day31-sequence-points.c` |
 | 32 | Function Pointers Deep Dive | Callbacks, vtables, command tables | `day32-function-pointers.c` |
 | 33a | Function Parameters | Pass mechanisms, const, variadic | `day33-function-parameters.c` |
@@ -96,7 +97,8 @@ Advanced Topics (Day 31+)
 | 34 | Multithreading | pthreads, mutexes, condition variables | `day34-multithreading.c` |
 | 35 | Advanced Error Handling | Propagation, logging, recovery, thread-safe | `day35-advanced-error-handling.c` |
 | 36 | Undefined Behavior | UB patterns, sanitizers, prevention | `day36-undefined-behavior.c` |
-| 37 | **Random Number Generation** | rand(), PCG, crypto RNG, testing | `day37-random-numbers.c` |
+| 37 | Random Number Generation | rand(), PCG, crypto RNG, testing | `day37-random-numbers.c` |
+| 38 | **Advanced Preprocessor** | Advanced macros, computations, debugging | `day38-advanced-macros.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
 
 ---
