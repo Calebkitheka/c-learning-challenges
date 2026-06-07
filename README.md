@@ -89,7 +89,6 @@ This repository documents my self-taught journey learning C programming through 
 
 | Day | Topic | Key Concepts | Files |
 |-----|-------|-------------|-------|
-| 25 | Preprocessor Deep Dive | Macros, conditionals, X-macros | `day25-preprocessor.c` |
 | 31 | Sequence Points | Evaluation order, undefined behavior | `day31-sequence-points.c` |
 | 32 | Function Pointers Deep Dive | Callbacks, vtables, command tables | `day32-function-pointers.c` |
 | 33a | Function Parameters | Pass mechanisms, const, variadic | `day33-function-parameters.c` |
@@ -98,9 +97,9 @@ This repository documents my self-taught journey learning C programming through 
 | 35 | Advanced Error Handling | Propagation, logging, recovery, thread-safe | `day35-advanced-error-handling.c` |
 | 36 | Undefined Behavior | UB patterns, sanitizers, prevention | `day36-undefined-behavior.c` |
 | 37 | Random Number Generation | rand(), PCG, crypto RNG, testing | `day37-random-numbers.c` |
-| 38 | **Advanced Preprocessor** | Advanced macros, computations, debugging | `day38-advanced-macros.c` |
+| 38 | Advanced Preprocessor | Advanced macros, computations, debugging | `day38-advanced-macros.c` |
+| 39 | **Signal Handling** | Signals, handlers, sigaction, safety, masks | `day39-signal-handling.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
-
 ---
 
 ## 🛠️ Build & Run Instructions
