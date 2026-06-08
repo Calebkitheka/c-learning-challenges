@@ -3,7 +3,7 @@
 > A structured, project-based path to mastering C programming — from basics to advanced systems programming.
 
 ![C Programming](https://img.shields.io/badge/C-ANSI%2FC99%2FC11-blue)
-![Progress](https://img.shields.io/badge/Progress-23%2F30%20Days-green)
+![Progress](https://img.shields.io/badge/Progress-40%2Finfinity%20Days-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
@@ -89,7 +89,6 @@ This repository documents my self-taught journey learning C programming through 
 
 | Day | Topic | Key Concepts | Files |
 |-----|-------|-------------|-------|
-| 25 | Preprocessor Deep Dive | Macros, conditionals, X-macros | `day25-preprocessor.c` |
 | 31 | Sequence Points | Evaluation order, undefined behavior | `day31-sequence-points.c` |
 | 32 | Function Pointers Deep Dive | Callbacks, vtables, command tables | `day32-function-pointers.c` |
 | 33a | Function Parameters | Pass mechanisms, const, variadic | `day33-function-parameters.c` |
@@ -98,10 +97,10 @@ This repository documents my self-taught journey learning C programming through 
 | 35 | Advanced Error Handling | Propagation, logging, recovery, thread-safe | `day35-advanced-error-handling.c` |
 | 36 | Undefined Behavior | UB patterns, sanitizers, prevention | `day36-undefined-behavior.c` |
 | 37 | Random Number Generation | rand(), PCG, crypto RNG, testing | `day37-random-numbers.c` |
-| 38 | **Advanced Preprocessor** | Advanced macros, computations, debugging | `day38-advanced-macros.c` |
+| 38 | Advanced Preprocessor | Advanced macros, computations, debugging | `day38-advanced-macros.c` |
+| 39 | Signal Handling | Signals, handlers, sigaction, safety, masks | `day39-signal-handling.c` |
+| 40 | **Variable Arguments** | va_list, format strings, type safety, forwarding | `day40-variadic-functions.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
-
----
 
 ## 🛠️ Build & Run Instructions
 
