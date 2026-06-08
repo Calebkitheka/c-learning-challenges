@@ -3,7 +3,7 @@
 > A structured, project-based path to mastering C programming — from basics to advanced systems programming.
 
 ![C Programming](https://img.shields.io/badge/C-ANSI%2FC99%2FC11-blue)
-![Progress](https://img.shields.io/badge/Progress-23%2F30%20Days-green)
+![Progress](https://img.shields.io/badge/Progress-40%2Finfinity%20Days-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
@@ -98,9 +98,9 @@ This repository documents my self-taught journey learning C programming through 
 | 36 | Undefined Behavior | UB patterns, sanitizers, prevention | `day36-undefined-behavior.c` |
 | 37 | Random Number Generation | rand(), PCG, crypto RNG, testing | `day37-random-numbers.c` |
 | 38 | Advanced Preprocessor | Advanced macros, computations, debugging | `day38-advanced-macros.c` |
-| 39 | **Signal Handling** | Signals, handlers, sigaction, safety, masks | `day39-signal-handling.c` |
+| 39 | Signal Handling | Signals, handlers, sigaction, safety, masks | `day39-signal-handling.c` |
+| 40 | **Variable Arguments** | va_list, format strings, type safety, forwarding | `day40-variadic-functions.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
----
 
 ## 🛠️ Build & Run Instructions
 
