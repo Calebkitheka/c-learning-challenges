@@ -100,6 +100,8 @@ This repository documents my self-taught journey learning C programming through 
 | 38 | Advanced Preprocessor | Advanced macros, computations, debugging | `day38-advanced-macros.c` |
 | 39 | Signal Handling | Signals, handlers, sigaction, safety, masks | `day39-signal-handling.c` |
 | 40 | **Variable Arguments** | va_list, format strings, type safety, forwarding | `day40-variadic-functions.c` |
+| 41 | Variable Arguments (Part 2) | _Generic, security, asprintf, library patterns | `day41-variadic-advanced.c` |
+| 42 | **Assertions** | assert(), _Static_assert, debug/release, best practices | `day42-assertions.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
 
 ## 🛠️ Build & Run Instructions
