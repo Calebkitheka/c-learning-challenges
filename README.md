@@ -3,7 +3,7 @@
 > A structured, project-based path to mastering C programming — from basics to advanced systems programming.
 
 ![C Programming](https://img.shields.io/badge/C-ANSI%2FC99%2FC11-blue)
-![Progress](https://img.shields.io/badge/Progress-42%2Finfinity%20Days-green)
+![Progress](https://img.shields.io/badge/Progress-44%2Finfinity%20Days-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
