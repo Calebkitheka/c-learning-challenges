@@ -3,7 +3,7 @@
 > A structured, project-based path to mastering C programming — from basics to advanced systems programming.
 
 ![C Programming](https://img.shields.io/badge/C-ANSI%2FC99%2FC11-blue)
-![Progress](https://img.shields.io/badge/Progress-42%2Finfinity%20Days-green)
+![Progress](https://img.shields.io/badge/Progress-44%2Finfinity%20Days-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
@@ -102,6 +102,8 @@ This repository documents my self-taught journey learning C programming through 
 | 40 | **Variable Arguments** | va_list, format strings, type safety, forwarding | `day40-variadic-functions.c` |
 | 41 | Variable Arguments (Part 2) | _Generic, security, asprintf, library patterns | `day41-variadic-advanced.c` |
 | 42 | **Assertions** | assert(), _Static_assert, debug/release, best practices | `day42-assertions.c` |
+| 43 | Generic Selection | _Generic, type-safe macros, patterns, limitations | `day43-generic-selection.c` |
+| 44 | **X-Macros** | Code generation, synchronization, patterns, state machines | `day44-x-macros.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
 
 ## 🛠️ Build & Run Instructions
