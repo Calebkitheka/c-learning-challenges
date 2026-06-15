@@ -3,7 +3,7 @@
 > A structured, project-based path to mastering C programming — from basics to advanced systems programming.
 
 ![C Programming](https://img.shields.io/badge/C-ANSI%2FC99%2FC11-blue)
-![Progress](https://img.shields.io/badge/Progress-46%2Finfinity%20Days-green)
+![Progress](https://img.shields.io/badge/Progress-47%2Finfinity%20Days-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
@@ -106,6 +106,7 @@ This repository documents my self-taught journey learning C programming through 
 | 44 | **X-Macros** | Code generation, synchronization, patterns, state machines | `day44-x-macros.c` |
 | 45 | Aliasing & Effective Type | Strict aliasing, type punning, effective type, optimizations | `day45-aliasing-effective-type.c` |
 | 46 | **Compilation Process** | Preprocessing, compilation, assembly, linking, build systems | `day46-compilation.c` |
+| 47 | **Inline Assembly** | asm syntax, operands, clobbers, atomics, CPU instructions | `day47-inline-assembly.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
 
 ## 🛠️ Build & Run Instructions
