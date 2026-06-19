@@ -110,6 +110,7 @@ This repository documents my self-taught journey learning C programming through 
 | 48 | **Identifier Scope** | Scope types, linkage, storage duration, name hiding | `day48-identifier-scope.c` |
 | 49 | **Type Conversions** | Implicit/explicit, promotions, signed/unsigned, safety | `day49-type-conversions.c` |
 | 50 | **Type Qualifiers** | const, volatile, restrict, _Atomic, const correctness | `day50-type-qualifiers.c` |
+| 50 | **Typedef** | Type aliases, struct typedefs, function pointers, opaque types | `day50-typedef.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
 
 ## 🛠️ Build & Run Instructions
