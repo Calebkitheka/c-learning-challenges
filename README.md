@@ -3,7 +3,7 @@
 > A structured, project-based path to mastering C programming — from basics to advanced systems programming.
 
 ![C Programming](https://img.shields.io/badge/C-ANSI%2FC99%2FC11-blue)
-![Progress](https://img.shields.io/badge/Progress-50%2Finfinity%20Days-green)
+![Progress](https://img.shields.io/badge/Progress-51%2Finfinity%20Days-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
@@ -110,6 +110,8 @@ This repository documents my self-taught journey learning C programming through 
 | 48 | **Identifier Scope** | Scope types, linkage, storage duration, name hiding | `day48-identifier-scope.c` |
 | 49 | **Type Conversions** | Implicit/explicit, promotions, signed/unsigned, safety | `day49-type-conversions.c` |
 | 50 | **Type Qualifiers** | const, volatile, restrict, _Atomic, const correctness | `day50-type-qualifiers.c` |
+| 50 | **Typedef** | Type aliases, struct typedefs, function pointers, opaque types | `day50-typedef.c` |
+| 51 | **Storage Classes** | auto, register, static, extern, _Thread_local | `day51-storage-classes.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
 
 ## 🛠️ Build & Run Instructions
