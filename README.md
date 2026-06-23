@@ -3,7 +3,7 @@
 > A structured, project-based path to mastering C programming — from basics to advanced systems programming.
 
 ![C Programming](https://img.shields.io/badge/C-ANSI%2FC99%2FC11-blue)
-![Progress](https://img.shields.io/badge/Progress-52%2Finfinity%20Days-green)
+![Progress](https://img.shields.io/badge/Progress-53%2Finfinity%20Days-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
@@ -113,6 +113,7 @@ This repository documents my self-taught journey learning C programming through 
 | 50 | **Typedef** | Type aliases, struct typedefs, function pointers, opaque types | `day50-typedef.c` |
 | 51 | **Storage Classes** | auto, register, static, extern, _Thread_local | `day51-storage-classes.c` |
 | 52 | **Declarations** | Declaration vs definition, specifiers, forward declarations, headers | `day52-declarations.c` |
+| 53 | **Advanced Declarations** | Complex patterns, multi-file design, compatibility, header best practices | `day53-advanced-declarations.c` |
 | ... | Continue Learning! | Network, embedded, system programming | Future projects |
 
 ## 🛠️ Build & Run Instructions
